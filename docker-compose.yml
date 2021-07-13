@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  db:
+    container_name: db
+    image: postgres
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    env_file: .env
+  api:
+    container_name: api
+    command: yarn && yarn build && yarn start:prod
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/api
+    depends_on:
+      - db
+    env_file: .env
