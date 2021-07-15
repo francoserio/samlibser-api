@@ -6,11 +6,15 @@ import { UsersModule } from './users/users.module';
 import User from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserController } from './users/users.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
