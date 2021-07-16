@@ -1,8 +1,8 @@
 version: '3.1'
 
 services:
-  db:
-    container_name: db
+  db-samlibser:
+    container_name: db-samlibser
     image: postgres
     restart: always
     ports:
@@ -10,13 +10,16 @@ services:
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
     env_file: .env
-  api:
-    container_name: api
+  api-samlibser:
+    container_name: api-samlibser
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: yarn && yarn build && yarn start:prod
     ports:
       - '3000:3000'
     volumes:
-      - .:/api
+      - .:/api-samlibser
     depends_on:
-      - db
+      - db-samlibser
     env_file: .env
