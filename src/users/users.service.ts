@@ -12,7 +12,7 @@ export class UsersService {
   ) {}
 
   async findOne(email: string): Promise<User | undefined> {
-    return this.userRepository.findOne(email);
+    return this.userRepository.findOne({ email });
   }
 
   async create(userData: CreateUserDto) {
