@@ -5,7 +5,6 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import User from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { UserController } from './users/users.controller';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -26,7 +25,7 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true,
     }),
   ],
-  controllers: [AppController, UserController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
