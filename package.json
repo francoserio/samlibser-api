@@ -32,6 +32,7 @@
     "@types/bcrypt": "^5.0.0",
     "bcrypt": "^5.0.1",
     "fastify": "3.14.0",
+    "googleapis": "^82.0.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
