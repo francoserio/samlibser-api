@@ -3,10 +3,10 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './local.strategy';
-import { GoogleOauthStrategy } from './google.strategy';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GoogleService } from './google/google.service';
 
 @Module({
   imports: [
@@ -21,7 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, LocalStrategy, GoogleOauthStrategy],
+  providers: [AuthService, LocalStrategy, GoogleService],
   controllers: [AuthController],
   exports: [AuthService, JwtModule],
 })

@@ -3,16 +3,25 @@ import { AuthService } from './auth.service';
 import RegisterDto from './dto/RegisterDto.dto';
 import { FastifyRequest } from 'fastify';
 import LocalAuthGuard from './localAuth.guard';
-import GoogleOauthGuard from './googleAuth.guard';
 import User from '../users/user.entity';
+import { GoogleService } from './google/google.service';
 
 interface RequestWithUser extends FastifyRequest {
   user: User;
 }
 
+interface RequestWithCode extends FastifyRequest {
+  query: {
+    code: string;
+  };
+}
+
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly googleService: GoogleService,
+  ) {}
 
   @Post('register')
   async register(@Body() registrationData: RegisterDto) {
@@ -25,14 +34,17 @@ export class AuthController {
     return this.authService.login(request.user);
   }
 
-  @UseGuards(GoogleOauthGuard)
-  @Get('google')
-  async googleAuth(@Req() request) {}
+  @Get('google-auth')
+  googleAuth() {
+    return this.googleService.generateAuthUrl();
+  }
 
-  @UseGuards(GoogleOauthGuard)
-  @Get('redirect')
-  async googleAuthRedirect(@Req() request: RequestWithUser) {
-    console.log('uuu');
-    return this.authService.login(request.user);
+  @Get('google-redirect')
+  async googleAuthRedirect(@Req() request: RequestWithCode) {
+    const { code } = request.query;
+    await this.googleService.setCredentials(code);
+    const googleUser = await this.googleService.getGoogleUser();
+    const user = await this.authService.registerGoogleUser(googleUser);
+    return this.authService.login(user);
   }
 }

@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import RegisterDto from './dto/RegisterDto.dto';
 import LoginDto from './dto/LoginDto.dto';
+import GoogleProfileDto from './google/dto/GoogleProfileDto.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,20 @@ export class AuthService {
     } catch (error) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  async registerGoogleUser(googleProfile: GoogleProfileDto) {
+    let user = await this.usersService.findOne(
+      googleProfile.emailAddresses[0].value,
+    );
+    if (!user) {
+      user = await this.usersService.create({
+        email: googleProfile.emailAddresses[0].value,
+        firstName: googleProfile.names[0].givenName,
+        lastName: googleProfile.names[0].familyName,
+      });
+    }
+    return user;
   }
 
   async register(registrationData: RegisterDto) {
