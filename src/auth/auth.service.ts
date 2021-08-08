@@ -31,17 +31,21 @@ export class AuthService {
   }
 
   async registerGoogleUser(googleProfile: GoogleProfileDto) {
-    let user = await this.usersService.findOne(
-      googleProfile.emailAddresses[0].value,
-    );
-    if (!user) {
-      user = await this.usersService.create({
-        email: googleProfile.emailAddresses[0].value,
-        firstName: googleProfile.names[0].givenName,
-        lastName: googleProfile.names[0].familyName,
-      });
+    try {
+      let user = await this.usersService.findOne(
+        googleProfile.emailAddresses[0].value,
+      );
+      if (!user) {
+        user = await this.usersService.create({
+          email: googleProfile.emailAddresses[0].value,
+          firstName: googleProfile.names[0].givenName,
+          lastName: googleProfile.names[0].familyName,
+        });
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    return user;
   }
 
   async register(registrationData: RegisterDto) {
